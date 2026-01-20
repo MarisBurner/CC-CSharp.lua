@@ -69,6 +69,7 @@ local function tryParseEnum(enumType, value, ignoreCase)
       return
     end
     for k, v in pairs(cls) do
+      local k = k
       if ignoreCase then
         k = k:lower()
       end
