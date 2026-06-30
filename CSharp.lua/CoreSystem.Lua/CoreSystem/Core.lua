@@ -728,14 +728,24 @@ else
   local System = System
   local throw = System.throw
   local trunc = System.trunc
-
-  function System.bnot(x) return ~x end
-  function System.band(x, y) return x & y end
-  function System.bor(x, y) return x | y end
-  function System.xor(x, y) return x ~ y end
-  function System.sl(x, y) return x << y end
-  function System.sr(x, y) return x >> y end
-  function System.div(x, y) if x ~ y < 0 then return -(-x // y) end return x // y end
+  
+  if bit then
+    System.bnot = function(x) return bit.bnot(x) end
+    System.band = function(x, y) return bit.band(x, y) end
+    System.bor = function(x, y) return bit.bor(x, y) end
+    System.xor = function(x, y) return bit.bxor(x, y) end
+    System.sl = function(x, y) return bit.blshift(x, y) end
+    System.sr = function(x, y) return bit.brshift(x, y) end
+    System.div = function(x, y) if bit.bxor(x, y) < 0 then return -(-x // y) end return x // y end
+  else
+    System.bnot = function(x) return ~x end
+    System.band = function(x, y) return x & y end
+    System.bor = function(x, y) return x | y end
+    System.xor = function(x, y) return x ~ y end
+    System.sl = function(x, y) return x << y end
+    System.sr = function(x, y) return x >> y end
+    System.div = function(x, y) if (x ~ y) < 0 then return -(-x // y) end return x // y end
+  end
 
   function System.mod(x, y)
     local v = x % y
@@ -1686,9 +1696,9 @@ end
 function System.init(t)
   local path, files = t.path, t.files
   if files then
-    path = (path and #path > 0) and (path .. '.') or ""
+    path = (path and #path > 0) and (path .. '/') or ""
     for i = 1, #files do
-      require(path .. files[i])
+      loadfile(path .. files[i] .. ".lua")()
     end
   end
 
