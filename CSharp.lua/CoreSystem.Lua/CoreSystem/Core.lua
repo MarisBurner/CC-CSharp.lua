@@ -1696,9 +1696,9 @@ end
 function System.init(t)
   local path, files = t.path, t.files
   if files then
-    path = (path and #path > 0) and (path .. '.') or ""
+    path = (path and #path > 0) and (path .. '/') or ""
     for i = 1, #files do
-      require(path .. files[i])
+      loadfile(path .. files[i] .. ".lua")()
     end
   end
 

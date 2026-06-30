@@ -720,9 +720,12 @@ if rawget(global, "jit") then
   end
 else
   local dump = string.dump
-  if dump and sbyte(dump(System.emptyFn), 7) == 0x00 then
+  pcall(function()
+    --Just let it slide (CC Tweaked Limitation)
+    if dump and sbyte(dump(System.emptyFn), 7) == 0x00 then
     isLittleEndian = false
-  end
+    end
+  end)
 end
 
 local function bytes(t)

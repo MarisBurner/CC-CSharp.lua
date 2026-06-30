@@ -33,7 +33,21 @@ local sformat = string.format
 local sfind = string.find
 local os = os
 local ostime = os.time
-local osdifftime = os.difftime
+local osdifftime = os.difftime or function(t2, t1, mode)
+  if not mode then
+    if t1 > 1000000000 or t2 > 1000000000 then
+      mode = "local"
+    else
+      mode = "ingame"
+    end
+  end
+
+  if mode == "ingame" then
+    return (t2 - t1) * 50
+  else
+    return t2 - t1
+  end
+end
 local osdate = os.date
 local tonumber = tonumber
 local math = math
